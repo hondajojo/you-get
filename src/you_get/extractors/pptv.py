@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 #__all__ = ['pptv_download', 'pptv_download_by_id']
+# http://web-play.pptv.com/webplay3-0-158940822.xml?type=web.fpp&version=4
+# 
 
 from ..common import *
 from ..extractor import VideoExtractor
@@ -104,7 +106,7 @@ def parse_pptv_xml(dom):
     for item in item_list:
         rid = get_attr(item, 'rid')
         file_type = get_attr(item, 'ft')
-        size = get_attr(item, 'filesize')
+        size = get_attr(item, 'filesize') or 0
         width = get_attr(item, 'width')
         height = get_attr(item, 'height')
         bitrate = get_attr(item, 'bitrate')
@@ -204,13 +206,14 @@ class PPTV(VideoExtractor):
         xml_streams = merge_meta(m_items, m_streams, m_segs)
         for stream_id in xml_streams:
             stream_data = xml_streams[stream_id]
-            src = make_url(stream_data)
-            self.streams[stream_id] = {
-                    'container': 'mp4',
-                    'video_profile': stream_data['res'],
-                    'size': int(stream_data['size']),
-                    'src': src
-            }
+            if stream_data.get('serv_addr', None):
+                src = make_url(stream_data)
+                self.streams[stream_id] = {
+                        'container': 'mp4',
+                        'video_profile': stream_data['res'],
+                        'size': int(stream_data['size']),
+                        'src': src
+                }
 
 '''
 def constructKey(arg):
