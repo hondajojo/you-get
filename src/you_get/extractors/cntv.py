@@ -42,6 +42,8 @@ def cntv_download(url, output_dir = '.', merge = True, info_only = False, **kwar
         id = r1(r'videoCenterId","(\w+)"', get_html(url))
     elif re.match(r'http://xiyou.cntv.cn/v-[\w-]+\.html', url):
         id = r1(r'http://xiyou.cntv.cn/v-([\w-]+)\.html', url)
+    elif re.match(r'http://xiyou.cctv.com/v-[\w-]+\.html', url):
+        id = r1(r'http://xiyou.cctv.com/v-([\w-]+)\.html', url)
     else:
         raise NotImplementedError(url)
 
